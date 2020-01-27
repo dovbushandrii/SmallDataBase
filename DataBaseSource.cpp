@@ -6,8 +6,9 @@
 using namespace std;
 
 void DataBaseInterface::Menu() {
-	string lines[5] = {
+	string lines[6] = {
 		"Поиск поездов\n",
+		"Изменение данных\n",
 		"Настройки поиска\n",
 		"Демострационный режим\n",
 		"Проверка производительности\n",
@@ -18,7 +19,7 @@ void DataBaseInterface::Menu() {
 	while (!end) {
 		system("cls");
 		cout << "Train DataBase 0.1\n\n";
-		for (int i = 0; i < 5; i++) {
+		for (int i = 0; i < 6; i++) {
 			if (i == line) {
 				cout << "--> " << lines[i];
 			}
@@ -36,7 +37,7 @@ void DataBaseInterface::Menu() {
 					else line = 4;
 				}
 				else if ((int)key == 80) {
-					if (line < 4) line++;
+					if (line < 5) line++;
 					else line = 0;
 				}
 			}
@@ -44,7 +45,8 @@ void DataBaseInterface::Menu() {
 		else {
 			switch (line) {
 				//case 0: this->Search(); break;
-			case 1: this->Settings(); break;
+			case 1: this->Edit();break;
+			case 2: this->Settings(); break;
 				//case 2: this->Demo(); break;
 				//case 3: this->Benchmark(); break;
 			case 4: end = !end; break;
@@ -54,7 +56,6 @@ void DataBaseInterface::Menu() {
 	system("cls");
 
 }
-
 void DataBaseInterface::Settings(){
 	string lines[7] = {
 		"Отображать номер поезда при поиске:                  ",
@@ -77,8 +78,8 @@ void DataBaseInterface::Settings(){
 				cout << "    " << lines[i];
 			}
 			if (i != 6) {
-				if (settings[i] == ShowOptions::SHOWN) cout << "< Äà >\n";
-				else cout << "< Íåò >\n";
+				if (settings[i] == ShowOptions::SHOWN) cout << "< Да >\n";
+				else cout << "< Нет >\n";
 			}
 		}
 		char key;
@@ -104,4 +105,45 @@ void DataBaseInterface::Settings(){
 			}
 		}
 	}
+}
+void DataBaseInterface::Edit() {
+	string lines[3] = {
+		"Добавление поездов\n",
+		"Удаление данных\n",
+		"Выход\n"
+	};
+	bool end = false;
+	int line = 0;
+	while (!end) {
+		system("cls");
+		for (int i = 0; i < 3; i++) {
+			if (i == line) {
+				cout << "--> " << lines[i];
+			}
+			else {
+				cout << "    " << lines[i];
+			}
+		}
+		char key;
+		key = _getch();
+		if ((int)key != 13) {
+			if ((int)key == -32) {
+				key = _getch();
+				if ((int)key == 72) {
+					if (line > 0) line--;
+					else line = 4;
+				}
+				else if ((int)key == 80) {
+					if (line < 2) line++;
+					else line = 0;
+				}
+			}
+		}
+		else {
+			switch (line) {
+			case 2: end = !end; break;
+			}
+		}
+	}
+	system("cls");
 }
