@@ -1,5 +1,6 @@
 #pragma once
 #include <vector>
+#include <string>
 using namespace std;
 enum ShowOptions {
 	SHOWN,
@@ -11,6 +12,24 @@ enum Type {
 	STANDART,
 	INTERCITY
 };
+enum SortBy {
+	NUMBER,
+	NAME,
+	DEPARTUREPOINT,
+	DESTINATION,
+	TYPE,
+	TIME,
+	RATE
+};
+struct TrainData {
+	int no;
+	string name;
+	string departurepoint;
+	string destination;
+	Type type;
+	float rate;
+
+};
 
 class DataBaseInterface {
 public:
@@ -21,22 +40,25 @@ public:
 		setlocale(LC_ALL, "Russian");
 	} // done
 	void Menu(); // done
+private:
+	ShowOptions settings[6];   // РќР°СЃС‚СЂРѕР№РєРё РѕС‚РѕР±СЂС‹Р¶РµРЅРёСЏ РґР°РЅРЅС‹С…  РІ РїРѕРёСЃРєРµ (РќРѕРјРµСЂ, РќР°Р·РІР°РЅРёРµ, РќР°РїСЂР°РІР»РµРЅРёРµ, РўРёРї, Р”Р°С‚Р°, Р РµР№С‚РёРЅРі)
+
+	void Edit();
 	void Settings(); // done
 	void Search();
 	void Demo();
 	void Benchmark();
-private:
-	ShowOptions settings[6];   // Настройки отобрыжения данных  в поиске (Номер, Название, Направление, Тип, Дата, Рейтинг)
 };
 
 class Searcher {
-public: vector < string > searchtrains(int& No, string& Name, string& Destination, Type& type, string& Time, float& Rate);
+public: 
+	vector<TrainData> searchtrains(vector<TrainData>& base);
+	void sortby(vector<TrainData>& SearchResult, SortBy filter);
 };
 
 class FileManager {
 
 };
-
 
 class Benchmark {
 
@@ -46,16 +68,21 @@ class Demonstrator {
 
 };
 
-struct TrainData {
-	int no;
-	string name;
-	string departurepoint;
-	string destination;
-	Type type;
-	float rate;
-	
-};
-
 class OnlineDataBase {
-
+public:
+	void loaddata(vector<TrainData> load) {
+		for (int i = 0; i < OnlineBase.size(); i++) {
+			OnlineBase.push_back(load[i]);
+		}
+	}
+	void deletedata() {
+		for (int i = 0; i < OnlineBase.size(); i++) {
+			OnlineBase.pop_back();
+		}
+	}
+	vector<TrainData>& getdata() {
+		return OnlineBase;
+	}
+private:
+	vector<TrainData> OnlineBase;
 };
