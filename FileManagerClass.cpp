@@ -34,8 +34,9 @@ void FileManager::uploaddata(OnlineDataBase base, string path) {
 		throw exception("File opening fail!");
 	}
 	vector<TrainData> b = base.getdata();
-	/*Порядок записи: номер,название,пункт отправления,прибытия,
-	тип,день,месяц,год,часы и минуты прибытия на станцию, отправления, рейтинг*/
+	/*РџРѕСЂСЏРґРѕРє Р·Р°РїРёСЃРё: Р°Р№РґРё,РЅРѕРјРµСЂ,РЅР°Р·РІР°РЅРёРµ,РїСѓРЅРєС‚ РѕС‚РїСЂР°РІР»РµРЅРёСЏ/РїСЂРёР±С‹С‚РёСЏ, С‚РёРї РїРѕРµР·РґР°, 
+	  РґР°С‚Р° РїСЂРёР±С‹С‚РёСЏ РЅР° СЃС‚Р°РЅС†РёСЋ(РґРµРЅСЊ,РјРµСЃСЏС†,РіРѕРґ), РІСЂРµРјСЏ РїСЂРёР±С‹С‚РёСЏ РЅР° СЃС‚Р°РЅС†РёСЋ(С‡Р°СЃ,РјРёРЅСѓС‚С‹), РІСЂРµРјСЏ
+	   РѕС‚РїСЂР°РІР»РµРЅРёСЏ, СЂРµР№С‚РёРЅРі*/
 	for (int i = 0; i < b.size(); i++) {
 		fout << b[i].id << '\t';
 		fout << b[i].no << '\t' << b[i].name << '\t';
@@ -95,28 +96,28 @@ vector<TrainData> FileManager::downloaddata(string path) {
 				idstr += train[i];
 			}
 			i++;
-			// Добавляем номер
+			// РЎС‡РёС‚С‹РІР°СЋ РЅРѕРјРµСЂ
 			newtrain.no = train.substr(i, 4);
 			i += 5;
-			// Добавляем название
+			// РЎС‡РёС‚С‹РІР°СЋ РЅР°Р·РІР°РЅРёРµ
 			while (train[i] != '\t') {
 				newtrain.name += train[i];
 				i++;
 			}
 			i++;
-			// Добавляем пункт отправления
+			// РЎС‡РёС‚С‹РІР°СЋ РїСѓРЅРєС‚ РѕС‚РїСЂР°РІР»РµРЅРёСЏ
 			while (train[i] != '\t') {
 				newtrain.departurepoint += train[i];
 				i++;
 			}
 			i++;
-			// Добавляем пункт прибытия
+			// РЎС‡РёС‚С‹РІР°СЋ РїСѓРЅРєС‚ РЅР°Р·РЅР°С‡РµРЅРёСЏ
 			while (train[i] != '\t') {
 				newtrain.destination += train[i];
 				i++;
 			}
 			i++;
-			// Добавляем тип
+			// РЎС‡РёС‚С‹РІР°СЋ С‚РёРї РїРѕРµР·РґР°
 			int type = train[i] - '0';
 			switch (type) {
 			case 0: newtrain.type = Type::INTER; break;
@@ -125,7 +126,7 @@ vector<TrainData> FileManager::downloaddata(string path) {
 			case 3: newtrain.type = Type::INTERCITY; break;
 			}
 			i += 2;
-			// Добавляем дату
+			// РЎС‡РёС‚С‹РІР°СЋ РґР°С‚Сѓ Рё РІСЂРµРјСЏ
 			for (int j = 0; train[i] != '\t'; j++) {
 				newtrain.date.day = newtrain.date.day * 10 + (train[i] - '0');
 				i++;
@@ -161,7 +162,7 @@ vector<TrainData> FileManager::downloaddata(string path) {
 				newtrain.date.minutes2 = newtrain.date.minutes2 * 10 + (train[i] - '0');
 				i++;
 			}
-			// Добавляем рейтинг
+			// РЎС‡РёС‚С‹РІР°СЋ СЂРµР№С‚РёРЅРі
 			i++;
 			string rate;
 			for (; i < train.size(); i++) {
