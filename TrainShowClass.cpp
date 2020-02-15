@@ -150,17 +150,17 @@ void TrainShow::ArrowsOnlyMenu(TrainShow::ParamsforArrowMenu& params) {
 	else if ((int)key != 13) {
 		if ((int)key == -32) {
 			key = _getch();
-			/*Êíîïêà ââåğõ*/
+			/*Ğ¡Ñ‚Ñ€ĞµĞ»ĞºĞ° Ğ²Ğ²ĞµÑ€Ñ…*/
 			if ((int)key == 72) {
 				if (params.line > 0) params.line--;
 				else params.line = params.lines.size()-1;
 			}
-			/*Êíîïêà âíèç*/
+			/*Ğ¡Ñ‚Ñ€ĞµĞ»ĞºĞ° Ğ²Ğ½Ğ¸Ğ·*/
 			else if ((int)key == 80) {
 				if (params.line < params.lines.size()-1) params.line++;
 				else params.line = 0;
 			}
-			/*Êíîïêè âëåâî è âïğàâî*/
+			/*Ğ¡Ñ‚Ñ€ĞµĞ»ĞºĞ¸ Ğ²Ğ»ĞµĞ²Ğ¾ Ğ¸ Ğ²Ğ¿Ñ€Ğ°Ğ²Ğ¾*/
 			else if ((int)key == 77 || (int)key == 75) {
 				params.returnkey = key;
 			}
