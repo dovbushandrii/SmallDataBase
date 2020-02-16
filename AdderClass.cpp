@@ -78,7 +78,7 @@ void Adder::adddepdestination(TrainData& newtrain) {
 	bool entered = false;
 	string variable;
 	string firstpoint;
-	bool deppoint = false; // проверка на введение пункта отправления
+	bool deppoint = false; // Check on entered departure point
 	while (!entered) {
 		system("cls");
 		string f;
@@ -99,7 +99,7 @@ void Adder::adddepdestination(TrainData& newtrain) {
 			if (variable.size() < 15) {
 				if ((variable.size() == 0) && (key >= 'a' && key <= 'z') ) {
 					variable += key + ('A' - 'a');
-				}		//Заменяет первую букву города(места отправления или прибытия) на заглавную
+				}		//Autocapitalisation for Latin Symbols(for firts symbol)
 				else {
 					if (key != '\t') {
 						variable += key;
