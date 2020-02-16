@@ -1,189 +1,211 @@
+#pragma once
+#include <vector>
 #include <iostream>
 #include <string>
-#include "DataBaseClasses.h"
-#include "UsefulFunc.h"
-
 using namespace std;
 
-void DataBaseInterface::Menu() {
-	FileManager fim;
-	TrainShow show;
-	fim.DownloadData(base);
-	TrainShow::ParamsforArrowMenu params = TrainShow::ParamsforArrowMenu();
-	params.lines = {
-		"Train Search\n",
-		"Editing\n",
-		"Search Settings\n",
-		"Demo\n",
-		"Benchmark\n",
-		"Exit\n"
-	};	
-	while (!params.end) {
-		show.ArrowsOnlyMenu(params);
-		if ((int)params.returnkey == 13) {
-			switch (params.line) {
-			case 0: this->Search(); break;
-			case 1: {
-				Editor edit;
-				edit.Edit(base);
-				break;
-			}
-			case 2: this->Settings(); break;
-			case 3: {
-				Demonstrator dem;
-				dem.Demo();
-				break;
-			}
-			case 4: {
-				Benchmark ben; 
-				ben.BenchmarkTest(".txt");
-				ben.BenchmarkTest(".bin");
-				break;
-			}
-			case 5: {
-				fim.StoringData(base); 
-				params.end = !params.end;
-				break;
-			}
-			}
-		}
-		else if ((int)params.returnkey == 27) {
-			fim.StoringData(base);
+
+enum ShowOptions {
+	SHOWN,
+	NOTSHOWN
+};
+enum Type {
+	INTER,
+	SPEED,
+	STANDART,
+	INTERCITY
+};
+struct Date {
+	Date() {
+		day = month = year = hours = minutes = hours2 = minutes2 = 0;
+	}
+	int day;
+	int month;
+	int year;
+	int hours;		//Время прибытия
+	int minutes;
+	int hours2;		//Время отправления
+	int minutes2;
+};
+struct TrainData {
+	TrainData() {
+		id = 0;
+		rate = 0;
+		type = Type::INTER;
+	}
+	int id;
+	string no;
+	string name;
+	string departurepoint;
+	string destination;
+	Type type;
+	Date date;
+	float rate;
+
+};
+
+class OnlineDataBase {
+public:
+	OnlineDataBase(){}
+	void loaddata(vector<TrainData> load) {
+		for (int i = 0; i < load.size(); i++) {
+			OnlineBase.push_back(load[i]);
 		}
 	}
+	void addelement(TrainData add) {
+		OnlineBase.push_back(add);
+	}
+	void deletedata() {
+		if (OnlineBase.size() > 0) {
+			vector<TrainData> newbase;
+			OnlineBase = newbase;
+		}
+	}
+	void deleteelement(int i) {
+		if (i > OnlineBase.size()) {
+			throw exception("Индекс элемента для удаления больше кол-ва элементов базы");
+		}
+		else {
+			vector<TrainData> newbase;
+			for (int j = 0; j < i; j++) {
+				newbase.push_back(OnlineBase[j]);
+			}
+			for (int j = i + 1; j < OnlineBase.size(); j++) {
+				newbase.push_back(OnlineBase[j]);
+			}
+			OnlineBase = newbase;
+		}
 
-	system("cls");
-}
+	}
+	void setid(vector<TrainData>& Base) {
+		for (int i = 0; i < Base.size(); i++) {
+			Base[i].id = i + 1;
+		}
+	}
+	vector<TrainData>& getdata() {
+		return OnlineBase;
+	}
+	vector<TrainData> OnlineBase;
+};
 
-void DataBaseInterface::Settings() {
-	vector<string> lines = {
-		"Show train's number:                                 ",
-		"Show train's name:                                   ",
-		"Show train's direction:                              ",
-		"Show train's type:                                   ",
-		"Show train's date&time of arrival/departure:         ",
-		"Show train's rate:                                   ",
-		"Back to menu\n"
+class DataBaseInterface {
+public:
+	DataBaseInterface() {
+		for (int i = 0; i < 6; i++) {
+			settings[i] = ShowOptions::SHOWN;
+		}
+	} // done
+	void Menu(); // done
+private:
+	ShowOptions settings[6];   // Настройки отобрыжения данных  в поиске (Номер, Название, Направление, Тип, Дата, Рейтинг)
+	OnlineDataBase base;	   //Online база данных
+	void Settings(); // done
+	void Search(); 
+	void searchbyname();
+	void searchbyrate();
+	void searchbydate();
+};
+
+class Editor {
+public:
+	void Edit(OnlineDataBase& base);
+	void Adding(OnlineDataBase& base);
+	void ChangeTrain(OnlineDataBase& base);
+	void SelectionDeleting(OnlineDataBase& base);
+	void DeleteAll(OnlineDataBase& base);
+};
+
+class TrainShow {
+public:
+	struct ParamsforSearchMenu {
+		ParamsforSearchMenu() {
+			end = false;
+			line = 0;
+			returnkey = '\0';
+			searchstr = "";
+			mainline = "";
+		}
+		bool end;
+		int line;
+		char returnkey;
+		string searchstr;
+		string mainline;
+		vector<TrainData> trains;
 	};
-	TrainShow show;
-	TrainShow::ParamsforArrowMenu params = TrainShow::ParamsforArrowMenu();
-	params.lines = lines;
-	while (!params.end) {
-		for (int i = 0; i < lines.size()-1; i++) {
-			if (settings[i] == ShowOptions::SHOWN) {
-				params.lines[i] = lines[i] +  "< Yes >\n";
-			}
-			else params.lines[i] = lines[i] + "< No >\n";
+	struct ParamsforArrowMenu{
+		ParamsforArrowMenu() {
+			end = false;
+			line = 0;
+			returnkey = '\0';
 		}
-
-		show.ArrowsOnlyMenu(params);
-	
-		if ((int)params.returnkey == 77 || (int)params.returnkey == 75) {
-			if (settings[params.line] == ShowOptions::SHOWN) settings[params.line] = ShowOptions::NOTSHOWN;
-			else settings[params.line] = ShowOptions::SHOWN;
-		}
-		if ((int)params.returnkey == 13) {
-			if (params.line == params.lines.size() - 1) {
-				params.end = !params.end;
-			}
-		}
-	}
-	system("cls");
-}
-
-void DataBaseInterface::Search() {
-	TrainShow show;
-	TrainShow::ParamsforArrowMenu params = TrainShow::ParamsforArrowMenu();
-	params.lines = {
-		"Search by name\n",
-		"Search by rate\n",
-		"Search by date\n",
-		"Back to menu\n"
+		bool end;
+		int line;
+		char returnkey;
+		vector<string> lines;
 	};
-	while (!params.end) {
-		show.ArrowsOnlyMenu(params);
-		if ((int)params.returnkey == 13) {
-			switch (params.line) {
-			case 0: this->searchbyname(); break;
-			case 1: this->searchbyrate(); break;
-			case 2: this->searchbydate(); break;
-			case 3: params.end = !params.end; break;
-			}
-		}
-	}
-	system("cls");
-}
+	void ArrowSearchMenu(TrainShow::ParamsforSearchMenu& params, ShowOptions settings[]);
+	void ArrowsOnlyMenu(TrainShow::ParamsforArrowMenu& params);
+	void traindatatooutstring(TrainData train, ShowOptions settings[]);
+	void traindatatooutstring(TrainData train);
+	void showtrain(TrainData train);
+};
 
-void DataBaseInterface::searchbyname() {
-	TrainShow show;
-	Searcher seeker;
-	TrainShow::ParamsforSearchMenu params = TrainShow::ParamsforSearchMenu();
-	system("cls");
-	cout << "Loading train's data...";
-	vector<TrainData> train = base.getdata();
-	while (!params.end) {
-		params.mainline = "Enter name: " + params.searchstr;
-		params.trains = seeker.searchtrains(train, params.searchstr);
+class Adder {
+public:
+	void addtrain(TrainData& newtrain); // done
+private:
+	void addnumber(TrainData& newtrain); //done
+	void addname(TrainData& newtrain);  //done
+	void adddepdestination(TrainData& newtrain); //done
+	void addtype(TrainData& newtrain);  //done
+	void adddate(TrainData& newtrain);  //done
+	void addrate(TrainData& newtrain);  //done
+};			// done,but needs more effitient solution
 
-		show.ArrowSearchMenu(params, settings);
+class Searcher {
+public: 
+	vector<TrainData> searchtrains(vector<TrainData> base,string name);
+	vector<TrainData> searchtrains(vector<TrainData> base,float rate);
+	vector<TrainData> searchtrains(vector<TrainData> base,Date date);
+};		    // Done
 
-		if (params.returnkey != '\0') {
-			if (params.searchstr.size() < 15) {
-				params.searchstr += params.returnkey;
-			}
-		}
-		
-	}
-}
-void DataBaseInterface::searchbyrate() {
-	TrainShow show;
-	Searcher seeker;
-	system("cls");
-	cout << "Loading train's data...";
-	vector<TrainData> train = base.getdata();
-	TrainShow::ParamsforSearchMenu params = TrainShow::ParamsforSearchMenu();
-	while (!params.end) {
-		params.mainline = "Enter rate: " + params.searchstr;
-		float rate = strtofloat(params.searchstr);
-		params.trains = seeker.searchtrains(train, rate);
+class FileManager {
+public:
+	void StoringData(OnlineDataBase& base);
+	void DownloadData(OnlineDataBase& base);
+	void StoringData(OnlineDataBase& base, string path);
+	void DownloadData(OnlineDataBase& base, string path);
+	vector<TrainData> downloaddata(string path);
+	vector<TrainData> downloaddatabin(string path);
+	void uploaddata(OnlineDataBase base,string path);
+	void uploaddatabin(OnlineDataBase base, string path);
+};
 
-		show.ArrowSearchMenu(params, settings);
+class Random {
+public:
+	string randstr();
+	int randbyte();
+	Type randtype();
+	float randrate();
+	Date randdate();
+};
 
-		if (params.returnkey != '\0') {
-			if ((params.returnkey >= '0' && params.returnkey <= '9') || params.returnkey == '.') {
-				if (params.searchstr.size() <= 255) {
-					params.searchstr += params.returnkey;
-				}
-			}
-		}
-	}
-}
-void DataBaseInterface::searchbydate()
-{
-	TrainShow show;
-	Searcher seeker;
-	string background = "hhmmddmmyyyy";
-	system("cls");
-	cout << "Loading train's data...";
-	vector<TrainData> train = base.getdata();
-	TrainShow::ParamsforSearchMenu params = TrainShow::ParamsforSearchMenu();
-	while (!params.end) {
-		string back = background;
-		for (int i = 0; i < params.searchstr.size(); i++) {
-			back[i] = params.searchstr[i];
-		}
-		params.mainline = "Enter date&time of departure: " + back.substr(0, 2) + ':' + back.substr(2, 2) + "	";
-		params.mainline += back.substr(4, 2) + '/' + back.substr(6, 2) + '/' + back.substr(8, 4);
-		Date date = stringtodate(params.searchstr);
-		params.trains = seeker.searchtrains(train, date);
-		show.ArrowSearchMenu(params, settings);
+class Benchmark {
+public:
+	void BenchmarkTest(string path);
+	TrainData& CreateRandomTrain();
+private: 
+	void Bench(OnlineDataBase& base,string path);
+	OnlineDataBase& createdatabase(int N);
+};
 
-		if (params.returnkey != '\0') {
-			if (params.searchstr.size() < 12) {
-				params.searchstr += params.returnkey;
-			}
-		}
-	}
-}
+class Demonstrator {
+public:
+	void Demo();
+};
+
+
+
+
 
 
