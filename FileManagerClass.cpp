@@ -34,9 +34,8 @@ void FileManager::uploaddata(OnlineDataBase base, string path) {
 		throw exception("File opening fail!");
 	}
 	vector<TrainData> b = base.getdata();
-	/*Порядок записи: айди,номер,название,пункт отправления/прибытия, тип поезда, 
-	  дата прибытия на станцию(день,месяц,год), время прибытия на станцию(час,минуты), время
-	   отправления, рейтинг*/
+	/*Writing order: ID, Numbe, Name, departure/destination points, train type, 
+	  arrival date(day,month,year), arrival time(hours,minutes), departure time(hours2,minutes2), rate*/
 	for (int i = 0; i < b.size(); i++) {
 		fout << b[i].id << '\t';
 		fout << b[i].no << '\t' << b[i].name << '\t';
@@ -96,28 +95,28 @@ vector<TrainData> FileManager::downloaddata(string path) {
 				idstr += train[i];
 			}
 			i++;
-			// Считываю номер
+			// Number read
 			newtrain.no = train.substr(i, 4);
 			i += 5;
-			// Считываю название
+			// Name read
 			while (train[i] != '\t') {
 				newtrain.name += train[i];
 				i++;
 			}
 			i++;
-			// Считываю пункт отправления
+			// Departure point read
 			while (train[i] != '\t') {
 				newtrain.departurepoint += train[i];
 				i++;
 			}
 			i++;
-			// Считываю пункт назначения
+			// Destination point read
 			while (train[i] != '\t') {
 				newtrain.destination += train[i];
 				i++;
 			}
 			i++;
-			// Считываю тип поезда
+			// Type read
 			int type = train[i] - '0';
 			switch (type) {
 			case 0: newtrain.type = Type::INTER; break;
@@ -126,7 +125,7 @@ vector<TrainData> FileManager::downloaddata(string path) {
 			case 3: newtrain.type = Type::INTERCITY; break;
 			}
 			i += 2;
-			// Считываю дату и время
+			// Date&Time read
 			for (int j = 0; train[i] != '\t'; j++) {
 				newtrain.date.day = newtrain.date.day * 10 + (train[i] - '0');
 				i++;
@@ -162,7 +161,7 @@ vector<TrainData> FileManager::downloaddata(string path) {
 				newtrain.date.minutes2 = newtrain.date.minutes2 * 10 + (train[i] - '0');
 				i++;
 			}
-			// Считываю рейтинг
+			// Rate read
 			i++;
 			string rate;
 			for (; i < train.size(); i++) {
