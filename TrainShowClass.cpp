@@ -150,17 +150,17 @@ void TrainShow::ArrowsOnlyMenu(TrainShow::ParamsforArrowMenu& params) {
 	else if ((int)key != 13) {
 		if ((int)key == -32) {
 			key = _getch();
-			/*Стрелка вверх*/
+			/*Up key*/
 			if ((int)key == 72) {
 				if (params.line > 0) params.line--;
 				else params.line = params.lines.size()-1;
 			}
-			/*Стрелка вниз*/
+			/*Donw key*/
 			else if ((int)key == 80) {
 				if (params.line < params.lines.size()-1) params.line++;
 				else params.line = 0;
 			}
-			/*Стрелки влево и вправо*/
+			/*Left and Right keys*/
 			else if ((int)key == 77 || (int)key == 75) {
 				params.returnkey = key;
 			}
