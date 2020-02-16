@@ -40,7 +40,7 @@ void Editor::Adding(OnlineDataBase& base) {
 	}
 	catch (exception & ex) {
 		system("cls");
-		cout << "Eding was canceled";
+		cout << "Adding has been canceled";
 	}
 }
 
