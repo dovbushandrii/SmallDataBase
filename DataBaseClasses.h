@@ -66,14 +66,7 @@ public:
 			throw exception("Индекс элемента для удаления больше кол-ва элементов базы");
 		}
 		else {
-			vector<TrainData> newbase;
-			for (int j = 0; j < i; j++) {
-				newbase.push_back(OnlineBase[j]);
-			}
-			for (int j = i + 1; j < OnlineBase.size(); j++) {
-				newbase.push_back(OnlineBase[j]);
-			}
-			OnlineBase = newbase;
+			OnlineBase.erase(OnlineBase.begin()+i);
 		}
 
 	}
