@@ -2,13 +2,18 @@
 #include <string>
 #include "DataBaseClasses.h"
 #include "UsefulFunc.h"
+#include <thread>
 
 using namespace std;
 
 void DataBaseInterface::Menu() {
 	FileManager fim;
 	TrainShow show;
-	fim.DownloadData(base);
+	thread th([](OnlineDataBase& base) {
+		FileManager fim;
+		fim.DownloadData(base);
+		},std::ref(base));
+
 	TrainShow::ParamsforArrowMenu params = TrainShow::ParamsforArrowMenu();
 	params.lines = {
 		"Train Search\n",
@@ -16,7 +21,7 @@ void DataBaseInterface::Menu() {
 		"Search Settings\n",
 		"Demo\n",
 		"Benchmark\n",
-		"Exit\n"
+		"Exit\n",
 	};	
 	while (!params.end) {
 		show.ArrowsOnlyMenu(params);
@@ -35,22 +40,24 @@ void DataBaseInterface::Menu() {
 				break;
 			}
 			case 4: {
-				Benchmark ben; 
+				Benchmark ben;
 				ben.BenchmarkTest(".txt");
 				ben.BenchmarkTest(".bin");
 				break;
 			}
 			case 5: {
-				fim.StoringData(base); 
+				fim.StoringData(base);
 				params.end = !params.end;
 				break;
 			}
 			}
+
 		}
 		else if ((int)params.returnkey == 27) {
 			fim.StoringData(base);
 		}
 	}
+	th.join();
 
 	system("cls");
 }
