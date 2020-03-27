@@ -1,15 +1,16 @@
 #include <string>
 #include <conio.h>
-#include "DataBaseClasses.h"
+#include "FileManagerClass.h"
 #include <fstream>
 #include <cstring>
+#include <iostream>
 
 using namespace std;
 
 float stringtofloat(string number) {
 	int point = 0;
 	float res = 0;
-	for (int i = number.size() - 1; i >= 0; i--) {
+	for (int i = (int)number.size() - 1; i >= 0; i--) {
 		if (number[i] == '.') {
 			point = number.size() - i;
 		}
@@ -17,7 +18,7 @@ float stringtofloat(string number) {
 			res += (number[i] - '0') * pow(10, number.size() - i - 1);
 		}
 	}
-	res = res / pow(10, point);
+	res = (res / pow(10, point));
 	if (number[0] == '0' || number[0] == '.') {
 		res *= 10;
 	}
@@ -34,9 +35,9 @@ void FileManager::uploaddata(OnlineDataBase base, string path) {
 		throw exception("File opening fail!");
 	}
 	vector<TrainData> b = base.getdata();
-	/*Writing order: ID, Numbe, Name, departure/destination points, train type, 
-	  arrival date(day,month,year), arrival time(hours,minutes), departure time(hours2,minutes2), rate*/
-	for (int i = 0; i < b.size(); i++) {
+	/*Порядок записи: номер,название,пункт отправления,прибытия,
+	тип,день,месяц,год,часы и минуты прибытия на станцию, отправления, рейтинг*/
+	for (int i = 0; i < (int)b.size(); i++) {
 		fout << b[i].id << '\t';
 		fout << b[i].no << '\t' << b[i].name << '\t';
 		fout << b[i].departurepoint << '\t' << b[i].destination << '\t';
@@ -58,10 +59,10 @@ void FileManager::uploaddatabin(OnlineDataBase base, string path) {
 		throw exception("File opening fail!");
 	}
 	vector<TrainData> b = base.getdata();
-	long long int length = b.size();
+	long long int length = (int)b.size();
 	fout.write((char*)&length, sizeof(long long int));
 	
-	for (int i = 0; i < b.size(); i++) {
+	for (int i = 0; i < (int)b.size(); i++) {
 		TrainData* uploadtrain = new TrainData();
 		int size = (int)sizeof(b[i]);
 		*uploadtrain = b[i];
@@ -85,7 +86,7 @@ vector<TrainData> FileManager::downloaddata(string path) {
 		newtrain.date = Date();
 		string train;
 		getline(fin, train);
-		if (train.size() < 2) {
+		if ((int)train.size() < 2) {
 			end = !end;
 		}
 		else {
@@ -95,28 +96,28 @@ vector<TrainData> FileManager::downloaddata(string path) {
 				idstr += train[i];
 			}
 			i++;
-			// Number read
+			// Добавляем номер
 			newtrain.no = train.substr(i, 4);
 			i += 5;
-			// Name read
+			// Добавляем название
 			while (train[i] != '\t') {
 				newtrain.name += train[i];
 				i++;
 			}
 			i++;
-			// Departure point read
+			// Добавляем пункт отправления
 			while (train[i] != '\t') {
 				newtrain.departurepoint += train[i];
 				i++;
 			}
 			i++;
-			// Destination point read
+			// Добавляем пункт прибытия
 			while (train[i] != '\t') {
 				newtrain.destination += train[i];
 				i++;
 			}
 			i++;
-			// Type read
+			// Добавляем тип
 			int type = train[i] - '0';
 			switch (type) {
 			case 0: newtrain.type = Type::INTER; break;
@@ -125,7 +126,7 @@ vector<TrainData> FileManager::downloaddata(string path) {
 			case 3: newtrain.type = Type::INTERCITY; break;
 			}
 			i += 2;
-			// Date&Time read
+			// Добавляем дату
 			for (int j = 0; train[i] != '\t'; j++) {
 				newtrain.date.day = newtrain.date.day * 10 + (train[i] - '0');
 				i++;
@@ -161,10 +162,10 @@ vector<TrainData> FileManager::downloaddata(string path) {
 				newtrain.date.minutes2 = newtrain.date.minutes2 * 10 + (train[i] - '0');
 				i++;
 			}
-			// Rate read
+			// Добавляем рейтинг
 			i++;
 			string rate;
-			for (; i < train.size(); i++) {
+			for (; i < (int)train.size(); i++) {
 				rate += train[i];
 			}
 			newtrain.rate = stringtofloat(rate);
@@ -206,6 +207,7 @@ void FileManager::StoringData(OnlineDataBase& base) {
 	char h = _getch();
 	if (h == 13) {
 		try {
+			cout << "Uploading data...\n";
 			this->uploaddatabin(base, "Base.bin");
 			this->uploaddata(base, "Base.txt");
 		}
@@ -227,15 +229,13 @@ void FileManager::StoringData(OnlineDataBase& base, string path) {
 	}
 }
 void FileManager::DownloadData(OnlineDataBase& base) {
-	system("cls");
-	cout << "Loading train's data...";
 	try {
 		base.loaddata(this->downloaddatabin("Base.bin"));
-		if (base.getdata().size() < 1) {
+		if ((int)base.getdata().size() < 1) {
 			throw exception("");
 		}
 	}
-	catch (exception & ex){
+	catch (exception & exept){
 		try {
 			base.loaddata(this->downloaddata("Base.txt"));
 			this->uploaddatabin(base, "Base.bin");

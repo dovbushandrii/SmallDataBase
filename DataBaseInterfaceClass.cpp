@@ -1,6 +1,12 @@
 #include <iostream>
 #include <string>
-#include "DataBaseClasses.h"
+#include "DataBaseInterfaceClass.h"
+#include "FileManagerClass.h"
+#include "TrainShowClass.h"
+#include "EditorClass.h"
+#include "DemonstratorClass.h"
+#include "BenchmarkClass.h"
+#include "SearcherClass.h"
 #include "UsefulFunc.h"
 #include <thread>
 
@@ -12,7 +18,7 @@ void DataBaseInterface::Menu() {
 	thread th([](OnlineDataBase& base) {
 		FileManager fim;
 		fim.DownloadData(base);
-		},std::ref(base));
+		},ref(base));
 
 	TrainShow::ParamsforArrowMenu params = TrainShow::ParamsforArrowMenu();
 	params.lines = {
@@ -76,7 +82,7 @@ void DataBaseInterface::Settings() {
 	TrainShow::ParamsforArrowMenu params = TrainShow::ParamsforArrowMenu();
 	params.lines = lines;
 	while (!params.end) {
-		for (int i = 0; i < lines.size()-1; i++) {
+		for (int i = 0; i < (int)lines.size()-1; i++) {
 			if (settings[i] == ShowOptions::SHOWN) {
 				params.lines[i] = lines[i] +  "< Yes >\n";
 			}
@@ -128,8 +134,9 @@ void DataBaseInterface::searchbyname() {
 	system("cls");
 	cout << "Loading train's data...";
 	vector<TrainData> train = base.getdata();
+	string sortset = "<None>";
 	while (!params.end) {
-		params.mainline = "Enter name: " + params.searchstr;
+		params.mainline = "Enter name: " + params.searchstr + sortset;
 		params.trains = seeker.searchtrains(train, params.searchstr);
 
 		show.ArrowSearchMenu(params, settings);
@@ -138,6 +145,9 @@ void DataBaseInterface::searchbyname() {
 			if (params.searchstr.size() < 15) {
 				params.searchstr += params.returnkey;
 			}
+		}
+		if (params.returnfunckey != 0) {
+
 		}
 		
 	}
@@ -176,7 +186,7 @@ void DataBaseInterface::searchbydate()
 	TrainShow::ParamsforSearchMenu params = TrainShow::ParamsforSearchMenu();
 	while (!params.end) {
 		string back = background;
-		for (int i = 0; i < params.searchstr.size(); i++) {
+		for (int i = 0; i < (int)params.searchstr.size(); i++) {
 			back[i] = params.searchstr[i];
 		}
 		params.mainline = "Enter date&time of departure: " + back.substr(0, 2) + ':' + back.substr(2, 2) + "	";
@@ -192,5 +202,3 @@ void DataBaseInterface::searchbydate()
 		}
 	}
 }
-
-

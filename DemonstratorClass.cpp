@@ -1,6 +1,8 @@
 #include <iostream>
-#include "DatabaseClasses.h"
+#include "DemonstratorClass.h"
 #include <time.h>
+#include "TrainShowClass.h"
+#include "BenchmarkClass.h"
 
 using namespace std;
 
@@ -65,6 +67,7 @@ void Demonstrator::Demo() {
 	cout << "In search mode:\nTrain Search->Search by name(rate,date)\n\n";
 	cout << "For searching just start to enter symbols(by name) or numbers(rate,date),\n";
 	cout << "and search result will be updated as you entered of deleted sybmol(Backspace)\n\n";
+	cout << "Also you can by pushing up/down arrowkeys select train and ,by hitting ENTER , read all train info";
 	cout << "For exiting search just smash that ESC button on the top left of your keyboard!\n\n";
 
 	system("pause");

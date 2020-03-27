@@ -1,6 +1,8 @@
 #include <iostream>
 #include <string>
-#include "DataBaseClasses.h"
+#include "EditorClass.h"
+#include "TrainShowClass.h"
+#include "AdderClass.h"
 #include <conio.h>
 
 using namespace std;
@@ -40,7 +42,7 @@ void Editor::Adding(OnlineDataBase& base) {
 	}
 	catch (exception & ex) {
 		system("cls");
-		cout << "Adding has been canceled";
+		cout << "Adding was canceled";
 	}
 }
 
@@ -82,7 +84,7 @@ void Editor::SelectionDeleting(OnlineDataBase& base) {
 			system("cls");
 			vector<TrainData> trains = base.getdata();
 			cout << "Enter - Delete; Esc - Exit\n";
-			for (int i = 0; i < trains.size(); i++) {
+			for (int i = 0; i < (int)trains.size(); i++) {
 				if (i == line) {
 					cout << "--> ";
 					show.traindatatooutstring(trains[i]);
@@ -104,7 +106,7 @@ void Editor::SelectionDeleting(OnlineDataBase& base) {
 							else line = trains.size() - 1;
 						}
 						else if ((int)key == 80) {
-							if (line < trains.size() - 1) line++;
+							if (line < (int)trains.size() - 1) line++;
 							else line = 0;
 						}
 					}

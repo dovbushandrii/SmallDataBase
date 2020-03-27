@@ -2,7 +2,7 @@
 #include <random>
 #include <string>
 #include <time.h>
-#include "DataBaseClasses.h"
+#include "RandomClass.h"
 #include <cmath>
 
 using namespace std;

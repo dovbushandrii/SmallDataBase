@@ -1,7 +1,7 @@
 #include <iostream>
 #include <conio.h>
 #include <string>
-#include "DataBaseClasses.h"
+#include "AdderClass.h"
 #include <cmath>
 
 using namespace std;
@@ -78,7 +78,7 @@ void Adder::adddepdestination(TrainData& newtrain) {
 	bool entered = false;
 	string variable;
 	string firstpoint;
-	bool deppoint = false; // Check on entered departure point
+	bool deppoint = false; // проверка на введение пункта отправления
 	while (!entered) {
 		system("cls");
 		string f;
@@ -97,9 +97,14 @@ void Adder::adddepdestination(TrainData& newtrain) {
 		}
 		else if ((int)key != 13) {
 			if (variable.size() < 15) {
-				if ((variable.size() == 0) && (key >= 'a' && key <= 'z') ) {
-					variable += key + ('A' - 'a');
-				}		//Autocapitalisation for Latin Symbols(for firts symbol)
+				if (variable.size() == 0) {
+					if (key >= 'a' && key <= 'z') {
+						variable += key + ('A' - 'a');
+					}
+					else {
+						variable += key;
+					}
+				}		//Заменяет первую букву города(места отправления или прибытия) на заглавную
 				else {
 					if (key != '\t') {
 						variable += key;
@@ -189,7 +194,7 @@ void enterdate(int& year, int& month, int& day, string phrase) {
 	while (!entered) {
 		system("cls");
 		string back = backorig;
-		for (int i = 0; i < newdate.size(); i++) {
+		for (int i = 0; i < (int)newdate.size(); i++) {
 			back[i] = newdate[i];
 		}
 		cout << phrase << back.substr(0, 2) + '/' + back.substr(2, 2) + '/' + back.substr(4, back.size());
@@ -248,7 +253,7 @@ void enterhours(int& hours, int& minutes, string phrase) {
 	while (!entered) {
 		system("cls");
 		string back = backorig;
-		for (int i = 0; i < newdate.size(); i++) {
+		for (int i = 0; i < (int)newdate.size(); i++) {
 			back[i] = newdate[i];
 		}
 		cout << phrase << back.substr(0, 2) + ':' + back.substr(2, back.size() - 1);

@@ -1,6 +1,9 @@
 #include <iostream>
 #include <string>
-#include "DataBaseClasses.h"
+#include "BenchmarkClass.h"
+#include "FileManagerClass.h"
+#include "SearcherClass.h"
+#include "RandomClass.h"
 #include <chrono>
 
 using namespace std;

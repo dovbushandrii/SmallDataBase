@@ -1,6 +1,6 @@
 #include <iostream>
 #include <string>
-#include "DataBaseClasses.h"
+#include "SearcherClass.h"
 
 using namespace std;
 
