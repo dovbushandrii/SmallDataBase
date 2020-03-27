@@ -7,6 +7,7 @@
 #include "DemonstratorClass.h"
 #include "BenchmarkClass.h"
 #include "SearcherClass.h"
+#include "SorterClass.h"
 #include "UsefulFunc.h"
 #include <thread>
 
@@ -127,17 +128,59 @@ void DataBaseInterface::Search() {
 	system("cls");
 }
 
+string setnewtyperight(Sorter::SortType& typeofsort) {
+	string a[9] = {
+		"<NONE>",
+		"<NUMBER>",
+		"<NAME>",
+		"<DEPARTURE POINT>",
+		"<DESTINATION POINT>",
+		"<ARRIVAL TIME>",
+		"<DEPARTURE TIME>",
+		"<DATE>",
+		"<RATE>",
+	};
+	int numb = (int)typeofsort;
+	numb++;
+	if (numb > 8) numb = 0;
+	typeofsort = (Sorter::SortType)numb;
+	
+	return a[numb];
+}
+
+string setnewtypeleft(Sorter::SortType& typeofsort) {
+	string a[9] = {
+		"<NONE>",
+		"<NUMBER>",
+		"<NAME>",
+		"<DEPARTURE POINT>",
+		"<DESTINATION POINT>",
+		"<ARRIVAL TIME>",
+		"<DEPARTURE TIME>",
+		"<DATE>",
+		"<RATE>",
+	};
+	int numb = (int)typeofsort;
+	numb--;
+	if (numb < 0) numb = 8;
+	typeofsort = (Sorter::SortType)numb;
+	return a[numb];
+}
+
 void DataBaseInterface::searchbyname() {
 	TrainShow show;
 	Searcher seeker;
+	Sorter s;
 	TrainShow::ParamsforSearchMenu params = TrainShow::ParamsforSearchMenu();
 	system("cls");
 	cout << "Loading train's data...";
 	vector<TrainData> train = base.getdata();
 	string sortset = "<None>";
+	Sorter::SortType typeofsort = Sorter::SortType::NONE;
 	while (!params.end) {
-		params.mainline = "Enter name: " + params.searchstr + sortset;
+		params.mainline = " Type of sort:" + sortset + "\n Enter name: " + params.searchstr ;
 		params.trains = seeker.searchtrains(train, params.searchstr);
+		s.sort(params.trains, typeofsort);
 
 		show.ArrowSearchMenu(params, settings);
 
@@ -147,7 +190,12 @@ void DataBaseInterface::searchbyname() {
 			}
 		}
 		if (params.returnfunckey != 0) {
-
+			if (params.returnfunckey == 75) {
+				sortset = setnewtypeleft(typeofsort);
+			}
+			else if (params.returnfunckey == 77) {
+				sortset = setnewtyperight(typeofsort);
+			}
 		}
 		
 	}
@@ -155,14 +203,18 @@ void DataBaseInterface::searchbyname() {
 void DataBaseInterface::searchbyrate() {
 	TrainShow show;
 	Searcher seeker;
+	Sorter s;
 	system("cls");
 	cout << "Loading train's data...";
 	vector<TrainData> train = base.getdata();
+	string sortset = "<None>";
 	TrainShow::ParamsforSearchMenu params = TrainShow::ParamsforSearchMenu();
+	Sorter::SortType typeofsort = Sorter::SortType::NONE;
 	while (!params.end) {
-		params.mainline = "Enter rate: " + params.searchstr;
+		params.mainline = " Type of sort:" + sortset + "\n Enter rate: " + params.searchstr;
 		float rate = strtofloat(params.searchstr);
 		params.trains = seeker.searchtrains(train, rate);
+		s.sort(params.trains, typeofsort);
 
 		show.ArrowSearchMenu(params, settings);
 
@@ -173,31 +225,51 @@ void DataBaseInterface::searchbyrate() {
 				}
 			}
 		}
+		if (params.returnfunckey != 0) {
+			if (params.returnfunckey == 75) {
+				sortset = setnewtypeleft(typeofsort);
+			}
+			else if (params.returnfunckey == 77) {
+				sortset = setnewtyperight(typeofsort);
+			}
+		}
 	}
 }
 void DataBaseInterface::searchbydate()
 {
 	TrainShow show;
 	Searcher seeker;
+	Sorter s;
 	string background = "hhmmddmmyyyy";
 	system("cls");
 	cout << "Loading train's data...";
 	vector<TrainData> train = base.getdata();
+	string sortset = "<None>";
 	TrainShow::ParamsforSearchMenu params = TrainShow::ParamsforSearchMenu();
+	Sorter::SortType typeofsort = Sorter::SortType::NONE;
 	while (!params.end) {
 		string back = background;
 		for (int i = 0; i < (int)params.searchstr.size(); i++) {
 			back[i] = params.searchstr[i];
 		}
-		params.mainline = "Enter date&time of departure: " + back.substr(0, 2) + ':' + back.substr(2, 2) + "	";
+		params.mainline = " Type of sort:" + sortset + "\nEnter date&time of departure: " + back.substr(0, 2) + ':' + back.substr(2, 2) + "	";
 		params.mainline += back.substr(4, 2) + '/' + back.substr(6, 2) + '/' + back.substr(8, 4);
 		Date date = stringtodate(params.searchstr);
 		params.trains = seeker.searchtrains(train, date);
+		s.sort(params.trains, typeofsort);
 		show.ArrowSearchMenu(params, settings);
 
 		if (params.returnkey != '\0') {
 			if (params.searchstr.size() < 12) {
 				params.searchstr += params.returnkey;
+			}
+		}
+		if (params.returnfunckey != 0) {
+			if (params.returnfunckey == 75) {
+				sortset = setnewtypeleft(typeofsort);
+			}
+			else if (params.returnfunckey == 77) {
+				sortset = setnewtyperight(typeofsort);
 			}
 		}
 	}
