@@ -2,6 +2,7 @@
 #include "TrainDataStruct.h"
 #include "functional"
 #include <vector>
+#include <iostream>
 
 using namespace std;
 
@@ -48,6 +49,21 @@ bool datecompar(TrainData a, TrainData b) {
 bool ratecompar(TrainData a, TrainData b) {
 	return (a.rate > b.rate) ? true : false;
 }
+int getnumbfortraintype(TrainData train) {
+	return train.type;
+}
+int getnumbfortrainumb1(TrainData train) {
+	return (train.no[3]-'0');
+}
+int getnumbfortrainumb2(TrainData train) {
+	return (train.no[2] - '0');
+}
+int getnumbfortrainumb3(TrainData train) {
+	return (train.no[1] - '0');
+}
+int getnumbfortrainumb4(TrainData train) {
+	return (train.no[0] - '0');
+}
 
 class Sorter {
 public:
@@ -59,13 +75,14 @@ public:
 		DESTINATIONPOINT,
 		ARRIVALTIME,
 		DEPARTURETIME,
+		TYPE,
 		DATE,
 		RATE
 	};
 	void sort(vector<TrainData>& base, SortType type) {
 		switch (type) {
 		case NUMBER:{
-			privatesort(base,numbercompar);
+			radixsort(base);
 			break;
 		}
 		case NAME:{
@@ -78,6 +95,10 @@ public:
 		}
 		case DESTINATIONPOINT: {
 			privatesort(base, despcompar);
+			break;
+		}
+		case TYPE: {
+			countingsort(base, getnumbfortraintype);
 			break;
 		}
 		case ARRIVALTIME: {
@@ -99,6 +120,7 @@ public:
 		default: break;
 		}
 	}
+	
 private:
 	void privatesort(vector<TrainData>& base, function<bool (TrainData a, TrainData b)> comp) {
 		recursivequick(base, 0, (int)base.size() - 1, comp);
@@ -129,4 +151,40 @@ private:
 		base[i] = base[j];
 		base[j] = c;
 	}
+	void radixsort(vector<TrainData>& base) {
+		countingsort(base, getnumbfortrainumb1);
+		countingsort(base, getnumbfortrainumb2);
+		countingsort(base, getnumbfortrainumb3);
+		countingsort(base, getnumbfortrainumb4);
+	}
+	void countingsort(vector<TrainData>& base, int getnumb(TrainData train)) {
+		TrainData* output = new TrainData[(int)base.size()];
+		int max = getMax(base, getnumb);
+		int* count = new int[max + 1];
+		for (int i = 0; i < (max + 1); i++) {
+			count[i] = 0;
+		}
+		for (int i = 0; i < (int)base.size(); i++) {
+			count[getnumb(base[i])]++;
+		}
+		for (int i = 1; i < max + 1; i++) {
+			count[i] += count[i - 1];
+		}
+		for (int i = (int)base.size()-1; i >= 0; i--) {
+			output[count[getnumb(base[i])]-1] = base[i];
+			count[getnumb(base[i])]--;
+		}
+		for (int i = 0; i < (int)base.size(); i++) {
+			base[i] = output[i]; 
+		}
+	}
+	int getMax(vector<TrainData> base, int getnumb(TrainData train)) {
+		int max = getnumb(base[0]);
+		for (int i = 1; i < (int)base.size(); i++) {
+			if (getnumb(base[i]) > max)
+				max = getnumb(base[i]);
+		}
+		return max;
+	}
+	
 };

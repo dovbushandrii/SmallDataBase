@@ -129,7 +129,7 @@ void DataBaseInterface::Search() {
 }
 
 string setnewtyperight(Sorter::SortType& typeofsort) {
-	string a[9] = {
+	string a[10] = {
 		"<NONE>",
 		"<NUMBER>",
 		"<NAME>",
@@ -137,19 +137,20 @@ string setnewtyperight(Sorter::SortType& typeofsort) {
 		"<DESTINATION POINT>",
 		"<ARRIVAL TIME>",
 		"<DEPARTURE TIME>",
+		"<TYPE>",
 		"<DATE>",
 		"<RATE>",
 	};
 	int numb = (int)typeofsort;
 	numb++;
-	if (numb > 8) numb = 0;
+	if (numb > 9) numb = 0;
 	typeofsort = (Sorter::SortType)numb;
 	
 	return a[numb];
 }
 
 string setnewtypeleft(Sorter::SortType& typeofsort) {
-	string a[9] = {
+	string a[10] = {
 		"<NONE>",
 		"<NUMBER>",
 		"<NAME>",
@@ -157,12 +158,13 @@ string setnewtypeleft(Sorter::SortType& typeofsort) {
 		"<DESTINATION POINT>",
 		"<ARRIVAL TIME>",
 		"<DEPARTURE TIME>",
+		"<TYPE>",
 		"<DATE>",
 		"<RATE>",
 	};
 	int numb = (int)typeofsort;
 	numb--;
-	if (numb < 0) numb = 8;
+	if (numb < 0) numb = 9;
 	typeofsort = (Sorter::SortType)numb;
 	return a[numb];
 }
@@ -178,7 +180,7 @@ void DataBaseInterface::searchbyname() {
 	string sortset = "<None>";
 	Sorter::SortType typeofsort = Sorter::SortType::NONE;
 	while (!params.end) {
-		params.mainline = " Type of sort:" + sortset + "\n Enter name: " + params.searchstr ;
+		params.mainline = " Type of sort: " + sortset + "\n Enter name: " + params.searchstr ;
 		params.trains = seeker.searchtrains(train, params.searchstr);
 		s.sort(params.trains, typeofsort);
 
@@ -211,7 +213,7 @@ void DataBaseInterface::searchbyrate() {
 	TrainShow::ParamsforSearchMenu params = TrainShow::ParamsforSearchMenu();
 	Sorter::SortType typeofsort = Sorter::SortType::NONE;
 	while (!params.end) {
-		params.mainline = " Type of sort:" + sortset + "\n Enter rate: " + params.searchstr;
+		params.mainline = " Type of sort: " + sortset + "\n Enter rate: " + params.searchstr;
 		float rate = strtofloat(params.searchstr);
 		params.trains = seeker.searchtrains(train, rate);
 		s.sort(params.trains, typeofsort);
@@ -252,7 +254,7 @@ void DataBaseInterface::searchbydate()
 		for (int i = 0; i < (int)params.searchstr.size(); i++) {
 			back[i] = params.searchstr[i];
 		}
-		params.mainline = " Type of sort:" + sortset + "\nEnter date&time of departure: " + back.substr(0, 2) + ':' + back.substr(2, 2) + "	";
+		params.mainline = " Type of sort: " + sortset + "\nEnter date&time of departure: " + back.substr(0, 2) + ':' + back.substr(2, 2) + "	";
 		params.mainline += back.substr(4, 2) + '/' + back.substr(6, 2) + '/' + back.substr(8, 4);
 		Date date = stringtodate(params.searchstr);
 		params.trains = seeker.searchtrains(train, date);

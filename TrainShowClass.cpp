@@ -80,10 +80,10 @@ void TrainShow::showtrain(TrainData train) {
 
 }
 
-void showlist(vector<TrainData> trains,int line, ShowOptions settings[]){
+void showlist(vector<TrainData> trains,int line, ShowOptions settings[]){ //Here I can regulate max numb of trains shown 
 	TrainShow t;
-	int size = 20;
-	if ((int)trains.size() < 20) {
+	int size = 12;
+	if ((int)trains.size() < size) {
 		size = (int)trains.size();
 	}
 	for (int i = 0; i < size + 1; i++) {
